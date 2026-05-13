@@ -20,9 +20,10 @@ jobs:
         with:
           msystem: MINGW64
           install: |
-            base-devel git make texinfo flex bison patch binutils mingw-w64-x86_64-gcc mpc-devel tar
+            base-devel git make texinfo flex bison patch binutils mpc-devel tar wget curl
             autotools gettext gettext-devel
-            mingw-w64-x86_64-cmake mingw-w64-x86_64-make mingw-w64-x86_64-libogg
+            mingw-w64-x86_64-readline mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake 
+            mingw-w64-x86_64-make mingw-w64-x86_64-libogg
           update: true
 
       - name: Run all stages in the shell
