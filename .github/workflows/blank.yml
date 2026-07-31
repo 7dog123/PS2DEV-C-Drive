@@ -9,11 +9,6 @@ on:
     paths-ignore:
       - '**.md'
       - '**.rst'
-  repository_dispatch:
-    types:
-      - run_build
-      - run_release
-  workflow_dispatch: {}
 
 jobs:
   build:
