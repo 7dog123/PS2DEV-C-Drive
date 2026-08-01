@@ -29,7 +29,7 @@ jobs:
     container:
       image: ${{ matrix.os.container }}
       options: ${{ matrix.os.container-options }}
-    timeout-minutes: 240
+    timeout-minutes: 340
 
     steps:
     - name: Checkout repository
