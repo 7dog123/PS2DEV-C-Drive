@@ -50,52 +50,56 @@ jobs:
           mingw-w64-ucrt-x86_64-pkgconf
         update: true
 
-    - name: Runs all the stages in the shell
-      run: |
-        set -e
-        . ./config/ci-env.sh
-        if test -f ./build-all.sh; then ./build-all.sh; fi
-        if test -f ./toolchain.sh; then ./toolchain.sh; fi
+    - name: finding where pkgconf is at
+	  run: |
+	    which pkg-config
+		pkg-config --version
+    #- name: Runs all the stages in the shell
+      #run: |
+        #set -e
+        #. ./config/ci-env.sh
+        #if test -f ./build-all.sh; then ./build-all.sh; fi
+        #if test -f ./toolchain.sh; then ./toolchain.sh; fi
 
-    - name: Print version of executables
-      run: |
-        if test -f ./config/ci-print-version.sh; then ./config/ci-print-version.sh; fi
+    #- name: Print version of executables
+      #run: |
+        #if test -f ./config/ci-print-version.sh; then ./config/ci-print-version.sh; fi
 
-    - name: Get short SHA
-      id: slug
-      run: printf '%s\n' "sha8=$(printf '%s\n' ${GITHUB_SHA} | cut -c1-8)" >> $GITHUB_OUTPUT
+    #- name: Get short SHA
+      #id: slug
+      #run: printf '%s\n' "sha8=$(printf '%s\n' ${GITHUB_SHA} | cut -c1-8)" >> $GITHUB_OUTPUT
 
-    - name: Compress ps2dev folder
-      run: |
-        tar -zcvf ps2dev-${{ matrix.os.runs-on }}.tar.gz ps2dev
+    #- name: Compress ps2dev folder
+      #run: |
+        #tar -zcvf ps2dev-${{ matrix.os.runs-on }}.tar.gz ps2dev
 
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ github.event.repository.name }}-${{ matrix.os.runs-on }}-ps2dev-${{ matrix.os.architecture }}-${{ matrix.os.macos-package-manager }}-${{ steps.slug.outputs.sha8 }}
-        path: ps2dev-${{ matrix.os.runs-on }}.tar.gz
+    #- name: Upload artifact
+      #uses: actions/upload-artifact@v4
+      #with:
+        #name: ${{ github.event.repository.name }}-${{ matrix.os.runs-on }}-ps2dev-${{ matrix.os.architecture }}-${{ matrix.os.macos-package-manager }}-${{ steps.slug.outputs.sha8 }}
+        #path: ps2dev-${{ matrix.os.runs-on }}.tar.gz
 
-    - name: Extract tag name
-      if: startsWith(github.ref, 'refs/tags/')
-      id: tag
-      run: printf 'VERSION=%s\n' "${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
+    #- name: Extract tag name
+      #if: startsWith(github.ref, 'refs/tags/')
+      #id: tag
+      #run: printf 'VERSION=%s\n' "${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
 
-    - name: Create pre-release
-      if: (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main') && github.event.repository.name == 'ps2dev' && matrix.os.macos-package-manager != 'port'
-      uses: softprops/action-gh-release@v2
-      with:
-        files: ps2dev-${{ matrix.os.runs-on }}.tar.gz
-        prerelease: true
-        name: "Development build"
-        tag_name: latest
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #- name: Create pre-release
+      #if: (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main') && github.event.repository.name == 'ps2dev' && matrix.os.macos-package-manager != 'port'
+      #uses: softprops/action-gh-release@v2
+      #with:
+        #files: ps2dev-${{ matrix.os.runs-on }}.tar.gz
+        #prerelease: true
+        #name: "Development build"
+        #tag_name: latest
+      #env:
+        #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Release
-      if: startsWith(github.ref, 'refs/tags/') && github.event.repository.name == 'ps2dev' && matrix.os.macos-package-manager != 'port'
-      uses: softprops/action-gh-release@v2
-      with:
-        files: ps2dev-${{ matrix.os.runs-on }}.tar.gz
-        tag_name: ${{ steps.tag.outputs.VERSION }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #- name: Release
+      #if: startsWith(github.ref, 'refs/tags/') && github.event.repository.name == 'ps2dev' && matrix.os.macos-package-manager != 'port'
+      #uses: softprops/action-gh-release@v2
+      #with:
+        #files: ps2dev-${{ matrix.os.runs-on }}.tar.gz
+        #tag_name: ${{ steps.tag.outputs.VERSION }}
+      #env:
+        #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
