@@ -1,3 +1,4 @@
+
 name: CI
 
 on:
@@ -13,93 +14,46 @@ on:
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
-        os: 
+        os:
           - runs-on: windows-latest
             architecture: x86_64
             shell: msys2
-            container: null
-            container-options: " "
-            macos-package-manager: null
-      fail-fast: false
+
     runs-on: ${{ matrix.os.runs-on }}
+
     defaults:
-     run:
-      shell: ${{ matrix.os.shell }} {0}
-    container:
-      image: ${{ matrix.os.container }}
-      options: ${{ matrix.os.container-options }}
+      run:
+        shell: msys2 {0}
+
     timeout-minutes: 340
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      with:
-        repository: 7dog123/ps2dev
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          repository: 7dog123/ps2dev
 
-    - name: Install MSYS2 packages
-      if: startsWith(matrix.os.runs-on, 'windows')
-      uses: msys2/setup-msys2@v2
-      with:
-        msystem: UCRT64
-        install: |
-          base-devel git make texinfo flex bison patch binutils mpc-devel tar wget curl
-          autotools gettext gettext-devel
-          mingw-w64-ucrt-x86_64-readline mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-cmake 
-          mingw-w64-ucrt-x86_64-make mingw-w64-ucrt-x86_64-libogg mingw-w64-ucrt-x86_64-libsystre
-          mingw-w64-ucrt-x86_64-pkgconf
-        update: true
+      - name: Install MSYS2 packages
+        if: startsWith(matrix.os.runs-on, 'windows')
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: >-
+            base-devel git make texinfo flex bison patch binutils
+            mpc-devel tar wget curl autotools gettext gettext-devel
+            mingw-w64-ucrt-x86_64-readline
+            mingw-w64-ucrt-x86_64-gcc
+            mingw-w64-ucrt-x86_64-cmake
+            mingw-w64-ucrt-x86_64-make
+            mingw-w64-ucrt-x86_64-libogg
+            mingw-w64-ucrt-x86_64-libsystre
+            mingw-w64-ucrt-x86_64-pkgconf
 
-    - name: finding where pkgconf is at
-	  run: |
-	    which pkg-config
-		pkg-config --version
-    #- name: Runs all the stages in the shell
-      #run: |
-        #set -e
-        #. ./config/ci-env.sh
-        #if test -f ./build-all.sh; then ./build-all.sh; fi
-        #if test -f ./toolchain.sh; then ./toolchain.sh; fi
-
-    #- name: Print version of executables
-      #run: |
-        #if test -f ./config/ci-print-version.sh; then ./config/ci-print-version.sh; fi
-
-    #- name: Get short SHA
-      #id: slug
-      #run: printf '%s\n' "sha8=$(printf '%s\n' ${GITHUB_SHA} | cut -c1-8)" >> $GITHUB_OUTPUT
-
-    #- name: Compress ps2dev folder
-      #run: |
-        #tar -zcvf ps2dev-${{ matrix.os.runs-on }}.tar.gz ps2dev
-
-    #- name: Upload artifact
-      #uses: actions/upload-artifact@v4
-      #with:
-        #name: ${{ github.event.repository.name }}-${{ matrix.os.runs-on }}-ps2dev-${{ matrix.os.architecture }}-${{ matrix.os.macos-package-manager }}-${{ steps.slug.outputs.sha8 }}
-        #path: ps2dev-${{ matrix.os.runs-on }}.tar.gz
-
-    #- name: Extract tag name
-      #if: startsWith(github.ref, 'refs/tags/')
-      #id: tag
-      #run: printf 'VERSION=%s\n' "${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
-
-    #- name: Create pre-release
-      #if: (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main') && github.event.repository.name == 'ps2dev' && matrix.os.macos-package-manager != 'port'
-      #uses: softprops/action-gh-release@v2
-      #with:
-        #files: ps2dev-${{ matrix.os.runs-on }}.tar.gz
-        #prerelease: true
-        #name: "Development build"
-        #tag_name: latest
-      #env:
-        #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    #- name: Release
-      #if: startsWith(github.ref, 'refs/tags/') && github.event.repository.name == 'ps2dev' && matrix.os.macos-package-manager != 'port'
-      #uses: softprops/action-gh-release@v2
-      #with:
-        #files: ps2dev-${{ matrix.os.runs-on }}.tar.gz
-        #tag_name: ${{ steps.tag.outputs.VERSION }}
-      #env:
-        #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Find pkg-config
+        run: |
+          which pkg-config
+          pkg-config --version
+          echo "PKG_CONFIG=$(which pkg-config)"
