@@ -54,7 +54,7 @@ jobs:
       run: |
         set -e
         . ./config/ci-env.sh
-        if [[ "$MSYSTEM" == "UCRT64" ]]; then
+        if [[ "$RUNNER_OS" == "Windows" ]]; then
           export PKG_CONFIG=/ucrt64/bin/pkg-config
         fi
         if test -f ./build-all.sh; then ./build-all.sh; fi
