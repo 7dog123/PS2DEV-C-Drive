@@ -54,7 +54,7 @@ jobs:
         set -e
         . ./config/ci-env.sh
         if [[ "$RUNNER_OS" == "Windows" ]]; then
-          export pkg-config pkg-config.exe
+          ls -sf /usr/bin/pkg-config.exe  /usr/bin/pkg-config
         fi
         if test -f ./build-all.sh; then ./build-all.sh; fi
         if test -f ./toolchain.sh; then ./toolchain.sh; fi
