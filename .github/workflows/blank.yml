@@ -46,8 +46,8 @@ jobs:
           base-devel git make texinfo flex bison patch binutils mpc-devel tar wget curl
           autotools gettext gettext-devel 
           mingw-w64-ucrt-x86_64-readline mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-make 
-          mingw-w64-ucrt-x86_64-libogg mingw-w64-ucrt-x86_64-libsystre mingw-w64-ucrt-pkgconf 
-          mingw-w64-ucrt-cmake
+          mingw-w64-ucrt-x86_64-libogg mingw-w64-ucrt-x86_64-libsystre mingw-w64-ucrt-x86_64-pkgconf 
+          mingw-w64-ucrt-x86_64-cmake
         update: true
 
     - name: Runs all the stages in the shell
