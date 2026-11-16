@@ -54,7 +54,13 @@ jobs:
       run: |
         set -e
         sed -i 's|https://github.com/ps2dev/ps2sdk.git|https://github.com/7dog123/ps2sdk.git|g' ./config/ci-env.sh
-        grep -n "ps2dev/ps2sdk.git" ./config/ci-env.sh
+        echo "Verifying PS2SDK URL..."
+        grep -n "7dog123/ps2sdk.git" ./config/ci-env.sh
+        if grep -q "ps2dev/ps2sdk.git" ./config/ci-env.sh; then
+         echo "ERROR: Old PS2SDK URL still exists!"
+         exit 1
+        fi
+        echo "PS2SDK URL successfully updated!"
         . ./config/ci-env.sh
         #if [[ "$RUNNER_OS" == "Windows" ]]; then
           # export PKG_CONFIG_EXECUTABLE=/usr/bin/pkg-config.exe
