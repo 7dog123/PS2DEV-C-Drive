@@ -54,7 +54,6 @@ jobs:
       run: |
         set -e
         sed -i 's|https://github.com/ps2dev/ps2sdk.git|https://github.com/7dog123/ps2sdk.git|g' ./config/ci-env.sh
-        # Checking if it changed the URL
         grep -n "ps2dev/ps2sdk.git" ./config/ci-env.sh
         . ./config/ci-env.sh
         #if [[ "$RUNNER_OS" == "Windows" ]]; then
